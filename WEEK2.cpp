@@ -2,65 +2,50 @@
 
 using namespace std;
 
-// Function to print a matrix
-void printMatrix(const vector<vector<int>>& matrix) {
-    for (const auto& row : matrix) {
-        for (int elem : row) {
-            cout << elem << " ";
-        }
-        cout << endl;
-    }
+string toLowerCase(const string& str) {
+    string lowerStr = str;
+    transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+    return lowerStr;
 }
 
-// Function to calculate the transpose of a matrix
-vector<vector<int>> transposeMatrix(const vector<vector<int>>& matrix) {
-    if (matrix.empty()) return {};
-    
-    size_t rows = matrix.size();
-    size_t cols = matrix[0].size();
-    
-    vector<vector<int>> transposed(cols, vector<int>(rows));
-    
-    for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
-            transposed[j][i] = matrix[i][j];
+// Function to remove punctuation from a string
+string removePunctuation(const string& str) {
+    string result;
+    for (char ch : str) {
+        if (!ispunct(ch)) {
+            result += ch;
         }
     }
-    
-    return transposed;
+    return result;
 }
 
 int main() {
-    size_t rows, cols;
+    string paragraph;
     
-    // Input the number of rows and columns
-    cout << "Enter the number of rows: ";
-    cin >> rows;
-    cout << "Enter the number of columns: ";
-    cin >> cols;
+    // Input the paragraph from the user
+    cout << "Enter a paragraph: ";
+    getline(cin, paragraph);
     
-    // Create a matrix with the given dimensions
-    vector<vector<int>> matrix(rows, vector<int>(cols));
+    // Use an unordered_map to count word frequencies
+    unordered_map<string, int> wordCount;
     
-    // Input the matrix elements
-    cout << "Enter the elements of the matrix:" << endl;
-    for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
-            cout << "Element at (" << i << "," << j << "): ";
-            cin >> matrix[i][j];
+    // Process the paragraph
+    stringstream ss(paragraph);
+    string word;
+    
+    while (ss >> word) {
+        word = removePunctuation(word); // Remove punctuation
+        word = toLowerCase(word); // Convert to lowercase
+        if (!word.empty()) {
+            ++wordCount[word]; // Increment word count
         }
     }
     
-    // Calculate the transpose of the matrix
-    vector<vector<int>> transposed = transposeMatrix(matrix);
-    
-    // Output the original matrix
-    cout << "Original matrix:" << endl;
-    printMatrix(matrix);
-    
-    // Output the transposed matrix
-    cout << "Transposed matrix:" << endl;
-    printMatrix(transposed);
+    // Print the frequencies
+    cout << "Word frequencies:" << endl;
+    for (const auto& pair : wordCount) {
+        cout << pair.first << ": " << pair.second << endl;
+    }
     
     return 0;
 }
